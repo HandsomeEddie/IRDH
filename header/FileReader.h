@@ -11,7 +11,7 @@ struct Image {
 struct ImageHeader {
     BITMAPFILEHEADER fileHeader;
     BITMAPINFOHEADER infoHeader;
-    RGBQUAD *rgbTable;
+    RGBQUAD rgbTable[256];
 };
 
 class FileReader {
@@ -24,5 +24,9 @@ private:
     void ReadBitmap(FILE *fp);
     Image mImage;
     ImageHeader mImageHeader;
+
+};
+
+class test {
 
 };

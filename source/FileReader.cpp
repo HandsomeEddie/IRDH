@@ -1,4 +1,5 @@
-#include "FileReader.h"
+#include "../header/FileReader.h"
+
 
 bool FileReader::ReadImage(const std::string &imageName) {
     std::string imageNameSuffix = imageName.substr(imageName.find_last_of('.') + 1);
@@ -21,6 +22,7 @@ bool FileReader::ReadImage(const std::string &imageName) {
     mImage.width = mImageHeader.infoHeader.biHeight;
 
     ReadBitmap(fp);
+    return true;
 }
 
 void FileReader::ReadBitmap(FILE *fp) {
@@ -28,7 +30,7 @@ void FileReader::ReadBitmap(FILE *fp) {
     int offset = linebyte % 4;
     if (offset != 0) {
         offset = 4 - offset; // "linebyte" must be the mutiple of 4
-    }
+    }   
 
     bool isUpwards = false;
     if (mImage.height > 0) {
@@ -51,11 +53,11 @@ void FileReader::ReadBitmap(FILE *fp) {
             fread(&temp, sizeof(unsigned char), 1, fp);
         }
     }
-    
 }
 
 void FileReader::SetImage(Image image) {
 
 }
+
 
 
