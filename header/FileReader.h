@@ -2,10 +2,13 @@
 #include <vector>
 #include <Windows.h>
 
+#ifndef FILEREADER_H
+#define FILEREADER_H
+
 struct Image {
     int width;
     int height;
-    std::vector<std::vector<unsigned char>> data;
+    std::vector<std::vector<unsigned char>> matrix;
 };
 
 struct ImageHeader {
@@ -18,7 +21,7 @@ class FileReader {
 public:
     bool ReadImage(const std::string &imageName);
     Image GetImage() { return mImage; }
-    void SetImage(Image image);
+    bool WriteImage(Image image, const std::string &imageName);
 
 private:
     void ReadBitmap(FILE *fp);
@@ -27,6 +30,4 @@ private:
 
 };
 
-class test {
-
-};
+#endif // FILEREADER_H
