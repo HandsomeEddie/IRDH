@@ -1,14 +1,9 @@
-#include "FileReader.h"
 #include <vector>
+#include <string>
+#include "Common.h"
 
 #ifndef DATAHIDER_H
 #define DATAHIDER_H
-
-struct HidingKey {
-    unsigned char peakPoint;
-    unsigned char zeroPoint;
-    int dataLength;
-};
 
 class DataHider {
 public:
@@ -17,6 +12,7 @@ public:
     Image GetImage() { return mMaskImage;}
     HidingKey GetKey() { return mHidingKey; }
 private:
+    std::string Transfer(const std::string &data);
     void ShiftHist();
     void Modify(const std::string &data);
 

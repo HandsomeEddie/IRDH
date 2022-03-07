@@ -1,21 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <Windows.h>
+#include "Common.h"
 
 #ifndef FILEREADER_H
 #define FILEREADER_H
 
-struct Image {
-    int width;
-    int height;
-    std::vector<std::vector<unsigned char>> matrix;
-};
 
-struct ImageHeader {
-    BITMAPFILEHEADER fileHeader;
-    BITMAPINFOHEADER infoHeader;
-    RGBQUAD rgbTable[256];
-};
 
 class FileReader {
 public:

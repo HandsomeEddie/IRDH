@@ -1,5 +1,4 @@
-#include "FileReader.h"
-#include "DataHider.h"
+#include "Common.h"
 
 #ifndef RECEIVER_H
 #define RECEIVER_H

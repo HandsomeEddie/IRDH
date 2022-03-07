@@ -1,6 +1,5 @@
 #include "../header/DataHider.h"
 
-
 #pragma region class DataHider
 
 DataHider::DataHider(const Image &image) {
@@ -8,16 +7,15 @@ DataHider::DataHider(const Image &image) {
 }
 
 void DataHider::EmbedData(const std::string &data) {
-    int k1 = mMaskImage.matrix[36][287];
     ShiftHist();
-    int k2 = mMaskImage.matrix[36][287];
     Modify(data);
     mHidingKey.dataLength = data.size();
     mHidingKey.peakPoint = mPeakPoint;
     mHidingKey.zeroPoint = mZeroPoint;
+}
 
-    int k = mMaskImage.matrix[36][287];
-
+std::string DataHider::Transfer(const std::string &data) {
+    return "";
 }
 
 void DataHider::ShiftHist() {
@@ -62,11 +60,6 @@ void DataHider::Modify(const std::string &data) {
     int kkk = 0;
     for (int i = 0; i < mMaskImage.width; ++i) {
         for (int j = 0; j < mMaskImage.height; ++j) {
-            
-            if (i == 36 && j == 287)
-             {
-                 kkk++;
-             }
             unsigned char pixel = mMaskImage.matrix[i][j];
             if (pixel == mPeakPoint) {
                 int value = data[count++] - '0';
@@ -85,7 +78,6 @@ void DataHider::Modify(const std::string &data) {
             }
         }
     }
-    std::cout << kkk;
 }
 
 #pragma endregion
