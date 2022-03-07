@@ -7,18 +7,16 @@ DataHider::DataHider(const Image &image) {
 }
 
 void DataHider::EmbedData(const std::string &data) {
+    CalculatePoints();
     ShiftHist();
     Modify(data);
+
     mHidingKey.dataLength = data.size();
     mHidingKey.peakPoint = mPeakPoint;
     mHidingKey.zeroPoint = mZeroPoint;
 }
 
-std::string DataHider::Transfer(const std::string &data) {
-    return "";
-}
-
-void DataHider::ShiftHist() {
+void DataHider::CalculatePoints() {
     // Calculate the histogram of image
     std::vector<int> hist(256, 0);
     for (int i = 0; i < mMaskImage.width; ++i) {
@@ -38,36 +36,33 @@ void DataHider::ShiftHist() {
             mPeakPoint = i;
         }
     }
+}
 
-    for (int i = 0; i < mMaskImage.width; ++i) {
-        for (int j = 0; j < mMaskImage.height; ++j) {
-            unsigned char pixel = mMaskImage.matrix[i][j];
-            // shift right while peakPoint is located at the left of zeroPoint
-            if (mPeakPoint < mZeroPoint && pixel > mPeakPoint && pixel < mZeroPoint) {
-                mMaskImage.matrix[i][j]++;
-            }
-            // shift left while peakPoint is located at the right of zeroPoint
-            if (mZeroPoint < mPeakPoint && pixel > mZeroPoint && pixel < mPeakPoint) {
-                mMaskImage.matrix[i][j]--;
-            }
-        }
+// 1.turn right while peak < zero
+// 2.turn left while zero < peak
+void DataHider::ShiftHist() {
+    Utils utils;
+    if (mPeakPoint < mZeroPoint) {
+        utils.MoveHist(mMaskImage, 1, mPeakPoint, mZeroPoint);
+    }
+    else {
+        utils.MoveHist(mMaskImage, -1, mZeroPoint, mPeakPoint);
     }
 }
 
+// 1.Pixels are added with val while peak < zero
+// 2.pixels are subtracted with val while zero < peak
 void DataHider::Modify(const std::string &data) {
     int count = 0;
 
-    int kkk = 0;
     for (int i = 0; i < mMaskImage.width; ++i) {
         for (int j = 0; j < mMaskImage.height; ++j) {
             unsigned char pixel = mMaskImage.matrix[i][j];
             if (pixel == mPeakPoint) {
                 int value = data[count++] - '0';
-                // Increment while peakPoint is located at the left of zeroPoint
                 if (mPeakPoint < mZeroPoint) {
                     mMaskImage.matrix[i][j] += value;
                 }
-                // Decrement while peakPoint is located at the right of zeroPoint
                 if (mZeroPoint < mPeakPoint) {
                     mMaskImage.matrix[i][j] -= value;
                 }

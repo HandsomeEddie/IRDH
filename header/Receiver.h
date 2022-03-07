@@ -1,4 +1,5 @@
 #include "Common.h"
+#include "Utils.h"
 
 #ifndef RECEIVER_H
 #define RECEIVER_H
@@ -10,9 +11,8 @@ public:
     Image GetImage() { return mRecoverImage; }
     std::string GetData() { return mData; }
 private:
-    void ShiftHist();
     void Modify();
-
+    void ShiftHist();
     Image mRecoverImage;
     std::string mData;
     HidingKey mHidingKey;

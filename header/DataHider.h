@@ -1,6 +1,6 @@
-#include <vector>
 #include <string>
 #include "Common.h"
+#include "Utils.h"
 
 #ifndef DATAHIDER_H
 #define DATAHIDER_H
@@ -12,7 +12,7 @@ public:
     Image GetImage() { return mMaskImage;}
     HidingKey GetKey() { return mHidingKey; }
 private:
-    std::string Transfer(const std::string &data);
+    void CalculatePoints();
     void ShiftHist();
     void Modify(const std::string &data);
 
