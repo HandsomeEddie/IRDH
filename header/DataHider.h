@@ -7,14 +7,16 @@
 
 class DataHider {
 public:
-    DataHider(const Image &image);
-    void EmbedData(const std::string &data);
+    void Init(const Image &image, const std::string &data);
+    void Embed();
     Image GetImage() { return mMaskImage;}
     HidingKey GetKey() { return mHidingKey; }
+
 private:
     void CalculatePoints();
     void ShiftHist();
-    void Modify(const std::string &data);
+    void Modify();
+    void SetKey();
 
     unsigned char mZeroPoint;
     int mZeroNum = INT_MAX;
@@ -22,6 +24,7 @@ private:
     int mPeakNum = 0;
 
     Image mMaskImage;
+    std::vector<std::bitset<8>> mBits;
     HidingKey mHidingKey;
 };
 

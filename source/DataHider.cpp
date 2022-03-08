@@ -2,18 +2,18 @@
 
 #pragma region class DataHider
 
-DataHider::DataHider(const Image &image) {
+void DataHider::Init(const Image &image, const std::string &data) {
     mMaskImage = image;
+    Utils utils;
+    mBits = utils.DataStr2Bits(data);
 }
 
-void DataHider::EmbedData(const std::string &data) {
+void DataHider::Embed() {
     CalculatePoints();
     ShiftHist();
-    Modify(data);
+    Modify();
 
-    mHidingKey.dataLength = data.size();
-    mHidingKey.peakPoint = mPeakPoint;
-    mHidingKey.zeroPoint = mZeroPoint;
+    SetKey();
 }
 
 void DataHider::CalculatePoints() {
@@ -52,14 +52,18 @@ void DataHider::ShiftHist() {
 
 // 1.Pixels are added with val while peak < zero
 // 2.pixels are subtracted with val while zero < peak
-void DataHider::Modify(const std::string &data) {
+void DataHider::Modify() {
     int count = 0;
 
     for (int i = 0; i < mMaskImage.width; ++i) {
         for (int j = 0; j < mMaskImage.height; ++j) {
             unsigned char pixel = mMaskImage.matrix[i][j];
             if (pixel == mPeakPoint) {
-                int value = data[count++] - '0';
+                int sets = count / 8;
+                int index = count % 8;
+                int value = mBits[sets][index];
+                count++;
+
                 if (mPeakPoint < mZeroPoint) {
                     mMaskImage.matrix[i][j] += value;
                 }
@@ -67,12 +71,18 @@ void DataHider::Modify(const std::string &data) {
                     mMaskImage.matrix[i][j] -= value;
                 }
 
-                if (count >= data.size()) {
+                if (count >= mBits.size() * 8) {
                     return;
                 }
             }
         }
     }
+}
+
+void DataHider::SetKey() {
+    mHidingKey.dataLength = mBits.size() * 8;
+    mHidingKey.peakPoint = mPeakPoint;
+    mHidingKey.zeroPoint = mZeroPoint;
 }
 
 #pragma endregion

@@ -44,6 +44,11 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "unordered_set": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp"
     }
 }

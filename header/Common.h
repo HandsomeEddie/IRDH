@@ -23,4 +23,6 @@ struct ImageHeader {
     RGBQUAD rgbTable[256];
 };
 
+
+
 #endif // COMMON_H
