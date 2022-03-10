@@ -12,8 +12,8 @@ struct HidingKey {
 };
 
 struct Image {
-    int width;
-    int height;
+    int width = 0;
+    int height = 0;
     std::vector<std::vector<unsigned char>> matrix;
 };
 

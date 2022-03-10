@@ -1,12 +1,20 @@
 #include "Logger.h"
 
+Logger* Logger::singleObject = nullptr;
+std::mutex* Logger::mutexLog = new std::mutex;
+
 Logger::Logger() {
     InitLogConfig();
 }
 
-//Logger* Logger::GetInstance() {
-
-//}
+Logger* Logger::GetInstance() {
+    mutexLog->lock();
+    if (singleObject == nullptr) {
+        singleObject = new Logger();
+    }
+    mutexLog->unlock();
+    return singleObject;
+}
 
 void Logger::InitLogConfig() {
     std::map<std::string, std::string*> logConfInfo;
@@ -19,7 +27,8 @@ void Logger::InitLogConfig() {
     logConfInfo["logBehavior"] = &this->log.logBehavior;
 
     std::ifstream file;
-    file.open("C:/Users/fudis/Documents/GitHub/IRDH/config/LoggerConfig.conf");
+    std::string filePath = Utils::GetInstance()->GetPath();
+    file.open(filePath + "/../config/LogConfig.conf");
     if (!file.is_open()) {
         std::cout << "Failed" << std::endl;
     }

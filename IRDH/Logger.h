@@ -1,3 +1,5 @@
+#include "Utils.h"
+
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -35,13 +37,11 @@ public:
     void LogDebug();
 
     void LogTrace();
-    void t();
+    
 private:
-
     Log log;
-    // static std::mutex * mutex_log;
-    // static std::mutex * mutex_file;
-     //static std::mutex * mutex_queue;
+    static Logger* singleObject;
+    static std::mutex* mutexLog;
 
 private:
     Logger();

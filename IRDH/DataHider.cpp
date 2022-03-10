@@ -4,8 +4,7 @@
 
 void DataHider::Init(const Image& image, const std::string& data) {
     mMaskImage = image;
-    Utils utils;
-    mBits = utils.DataStr2Bits(data);
+    mBits = Utils::GetInstance()->DataStr2Bits(data);
 }
 
 void DataHider::Embed() {
@@ -49,12 +48,12 @@ void DataHider::CalculatePoints() {
 // 1.turn right while peak < zero
 // 2.turn left while zero < peak
 void DataHider::ShiftHist() {
-    Utils utils;
+    //Utils utils;
     if (mPeakPoint < mZeroPoint) {
-        utils.MoveHist(mMaskImage, 1, mPeakPoint, mZeroPoint);
+        Utils::GetInstance()->MoveHist(mMaskImage, 1, mPeakPoint, mZeroPoint);
     }
     else {
-        utils.MoveHist(mMaskImage, -1, mZeroPoint, mPeakPoint);
+        Utils::GetInstance()->MoveHist(mMaskImage, -1, mZeroPoint, mPeakPoint);
     }
 }
 

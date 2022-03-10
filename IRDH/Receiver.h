@@ -20,7 +20,7 @@ private:
 
 private:
     Image mRecoverImage;
-    std::string mData;
+    std::string mData = "";
     HidingKey mHidingKey;
 };
 

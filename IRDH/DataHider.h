@@ -23,9 +23,9 @@ private:
     void SetKey();
 
 private:
-    unsigned char mZeroPoint;
+    unsigned char mZeroPoint = 0;
     int mZeroNum = INT_MAX;
-    unsigned char mPeakPoint;
+    unsigned char mPeakPoint = 0;
     int mPeakNum = 0;
     Image mMaskImage;
     std::vector<std::bitset<8>> mBits;

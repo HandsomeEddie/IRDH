@@ -1,5 +1,18 @@
 #include "Utils.h"
 
+Utils* Utils::singleObject = nullptr;
+
+std::mutex* Utils::mutexUtil = new std::mutex;
+
+Utils* Utils::GetInstance() {
+    mutexUtil->lock();
+    if (singleObject == nullptr) {
+        singleObject = new Utils();
+    }
+    mutexUtil->unlock();
+    return singleObject;
+}
+
 // Pixels between (left, right) are added with val
 void Utils::MoveHist(Image& image, int val, int left, int right) {
     for (int i = 0; i < image.height; ++i) {
@@ -28,4 +41,10 @@ std::string Utils::Bits2DataStr(const std::vector<std::bitset<8>>& bits) {
         data += (char)num;
     }
     return data;
+}
+
+std::string Utils::GetPath() {
+    char* buffer;
+    buffer = _getcwd(NULL, 0);
+    return buffer;
 }

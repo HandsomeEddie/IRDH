@@ -58,11 +58,11 @@ void Receiver::Modify() {
 }
 
 void Receiver::ShiftHist() {
-    Utils utils;
+    //Utils utils;
     if (mHidingKey.peakPoint < mHidingKey.zeroPoint) {
-        utils.MoveHist(mRecoverImage, -1, mHidingKey.peakPoint + 1, mHidingKey.zeroPoint + 1);
+        Utils::GetInstance()->MoveHist(mRecoverImage, -1, mHidingKey.peakPoint + 1, mHidingKey.zeroPoint + 1);
     }
     else {
-        utils.MoveHist(mRecoverImage, 1, mHidingKey.zeroPoint - 1, mHidingKey.peakPoint - 1);
+        Utils::GetInstance()->MoveHist(mRecoverImage, 1, mHidingKey.zeroPoint - 1, mHidingKey.peakPoint - 1);
     }
 }
