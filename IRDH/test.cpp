@@ -39,9 +39,8 @@ int main() {
     std::cout << "The extracted data is: " << extractData << std::endl;
 
 
-    Logger::GetInstance()->PrintLogConfig();
-
-
+    Logger::GetInstance()->LogWarn("123");
+    LOGWARN("234");
 
     std::cout << "Over~";
 }

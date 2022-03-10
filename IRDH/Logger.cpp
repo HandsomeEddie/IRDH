@@ -1,19 +1,19 @@
 #include "Logger.h"
 
-Logger* Logger::singleObject = nullptr;
-std::mutex* Logger::mutexLog = new std::mutex;
+Logger* Logger::mSingleObject = nullptr;
+std::mutex* Logger::mMutexLog = new std::mutex;
 
 Logger::Logger() {
     InitLogConfig();
 }
 
 Logger* Logger::GetInstance() {
-    mutexLog->lock();
-    if (singleObject == nullptr) {
-        singleObject = new Logger();
+    mMutexLog->lock();
+    if (mSingleObject == nullptr) {
+        mSingleObject = new Logger();
     }
-    mutexLog->unlock();
-    return singleObject;
+    mMutexLog->unlock();
+    return mSingleObject;
 }
 
 void Logger::InitLogConfig() {
@@ -26,11 +26,19 @@ void Logger::InitLogConfig() {
     logConfInfo["logMixSize"] = &this->log.logMixSize;
     logConfInfo["logBehavior"] = &this->log.logBehavior;
 
+    mLogTypeMap[LogType::ErrorType] = "Error";
+    mLogTypeMap[LogType::WarnType] = "Warn";
+    mLogTypeMap[LogType::InfoType] = "Info";
+    mLogTypeMap[LogType::DebugType] = "Debug";
+    mLogTypeMap[LogType::TraceType] = "Trace";
+
+    bool isOpen = true;
     std::ifstream file;
     std::string filePath = Utils::GetInstance()->GetPath();
     file.open(filePath + "/../config/LogConfig.conf");
     if (!file.is_open()) {
         std::cout << "Failed" << std::endl;
+        isOpen = false;
     }
 
     std::string str;
@@ -60,6 +68,10 @@ void Logger::InitLogConfig() {
         }
     }
     file.close();
+
+    if (isOpen) {
+        PrintLogConfig();
+    }
 }
 
 void Logger::PrintLogConfig() {
@@ -83,3 +95,74 @@ void Logger::PrintLogConfig() {
     std::cout << std::endl;
 }
 
+std::string Logger::GetLogCoutTime() {
+    struct tm t;
+    time_t now;
+    time(&now);
+    localtime_s(&t, &now);
+
+    char tmp[64];
+    strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", &t);
+    std::string tmpStr = tmp;
+    return "[" + tmpStr + "]";
+}
+
+std::string Logger::GetLogCoutProcessId() {
+    return std::to_string(_getpid());
+}
+
+std::string Logger::GetLogCoutThreadId() {
+    return std::to_string(GetCurrentThreadId());
+}
+
+std::string Logger::GetLogCoutUserName() {
+    const int MAX_LEN = 100;
+    TCHAR szBuffer[MAX_LEN];
+    DWORD len = MAX_LEN;
+    GetUserName(szBuffer, &len);
+
+    int iLen = WideCharToMultiByte(CP_ACP, 0, szBuffer, -1, NULL, 0, NULL, NULL);
+    char* chRtn = new char[iLen * sizeof(char)];
+    WideCharToMultiByte(CP_ACP, 0, szBuffer, -1, chRtn, iLen, NULL, NULL);
+    std::string str(chRtn);
+    return " " + str + " ";
+}
+
+std::string Logger::GetFilePathAndName() {
+    return log.logFilePath + "/" + log.logName;
+}
+
+void Logger::WriteLogIntoFile(LogType logType, std::string message) {
+    std::string messageAll = __LOGTIME__ + mLogTypeMap[logType] + " " + message;
+    messageAll = messageAll + " PID: " + __LOGPID__ + " TID: " + __LOGTID__;
+    messageAll = messageAll + "[" + __LOGFUNC__ + ":" + std::to_string(__LOGLINE__) + "]";
+    std::string fileName = GetFilePathAndName();
+    FILE* fp;
+    fopen_s(&fp, fileName.c_str(), "rb");
+    if (nullptr == fp) {
+        return;
+    }
+    fwrite(&messageAll, messageAll.size(), 1, fp);
+}
+
+void Logger::WriteLogIntoTerminal(LogType logType, std::string message) {
+    std::string messageAll = __LOGTIME__ + mLogTypeMap[logType] + " " + message;
+    messageAll = messageAll + " PID: " + __LOGPID__ + " TID: " + __LOGTID__;
+    messageAll = messageAll + "[" + __LOGFUNC__ + ":" + std::to_string(__LOGLINE__) + "]";
+    std::cout << messageAll << std::endl;
+}
+
+void Logger::WriteLog(LogType logType, std::string message) {
+    if (SWITCH_ON == log.logSwitch) {
+        if (SWITCH_OFF != log.logFileSwitch) {
+            WriteLogIntoFile(logType, message);
+        }
+        if (SWITCH_OFF != log.logTerminalSwitch) {
+            WriteLogIntoTerminal(logType, message);
+        }
+    }
+}
+
+void Logger::LogWarn(std::string message) {
+    WriteLog(LogType::WarnType, message);
+}

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Common.h"
-
+#include "Logger.h"
 #ifndef FILEREADER_H
 #define FILEREADER_H
 

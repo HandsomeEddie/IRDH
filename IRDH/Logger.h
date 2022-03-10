@@ -10,6 +10,24 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+enum class LogType: int {
+    ErrorType = 1,
+    WarnType = 2,
+    InfoType = 3,
+    DebugType = 4,
+    TraceType = 5
+};
+
+#define __LOGTIME__  Logger::GetInstance()->GetLogCoutTime()          //时间宏
+#define __LOGPID__   Logger::GetInstance()->GetLogCoutProcessId()     //进程宏
+#define __LOGTID__   Logger::GetInstance()->GetLogCoutThreadId()      //线程宏
+#define __LOGFILE__  __FILE__          //文件名宏
+#define __LOGFUNC__  __func__          //函数名宏
+#define __LOGLINE__  __LINE__          //行数宏
+
+const std::string SWITCH_ON = "on";
+const std::string SWITCH_OFF = "off";
+
 struct Log {
     std::string logSwitch;           //日志开关
     std::string logFileSwitch;       //是否写入文件
@@ -28,25 +46,34 @@ public:
 
     void PrintLogConfig();
 
-    void LogError();
+    std::string GetLogCoutTime();
 
-    void LogWarn();
+    std::string GetLogCoutProcessId();
 
-    void LogInfo();
+    std::string GetLogCoutThreadId();
 
-    void LogDebug();
+    std::string GetLogCoutUserName();
 
-    void LogTrace();
-    
+    std::string GetFilePathAndName();
+
+    void WriteLogIntoFile(LogType logType, std::string message);
+
+    void WriteLogIntoTerminal(LogType logType, std::string message);
+
+    void WriteLog(LogType logType, std::string message);
+
+    void LogWarn(std::string message);
+
 private:
     Log log;
-    static Logger* singleObject;
-    static std::mutex* mutexLog;
+    static Logger* mSingleObject;
+    static std::mutex* mMutexLog;
+    std::map<LogType, std::string> mLogTypeMap;
 
 private:
     Logger();
 };
 
-
+#define LOGWARN(message) Logger::GetInstance()->LogWarn(message)
 
 #endif // LOGGER_H
