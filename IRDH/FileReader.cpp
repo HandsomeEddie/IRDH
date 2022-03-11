@@ -67,7 +67,7 @@ bool FileReader::WriteImage(Image image, const std::string& imageName) {
             point += 1;
         }
     }
-    LOGWARN("test");
+
     fwrite(&mImageHeader.fileHeader, sizeof(BITMAPFILEHEADER), 1, fp);
     fwrite(&mImageHeader.infoHeader, sizeof(BITMAPINFOHEADER), 1, fp);
     if (mImageHeader.infoHeader.biBitCount == 8) {

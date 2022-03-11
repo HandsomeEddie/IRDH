@@ -129,40 +129,41 @@ std::string Logger::GetLogCoutUserName() {
 }
 
 std::string Logger::GetFilePathAndName() {
-    return log.logFilePath + "/" + log.logName;
+    return log.logFilePath + "/" + log.logName + ".log";
 }
 
-void Logger::WriteLogIntoFile(LogType logType, std::string message) {
-    std::string messageAll = __LOGTIME__ + mLogTypeMap[logType] + " " + message;
-    messageAll = messageAll + " PID: " + __LOGPID__ + " TID: " + __LOGTID__;
-    messageAll = messageAll + "[" + __LOGFUNC__ + ":" + std::to_string(__LOGLINE__) + "]";
-    std::string fileName = GetFilePathAndName();
-    FILE* fp;
-    fopen_s(&fp, fileName.c_str(), "rb");
-    if (nullptr == fp) {
-        return;
+std::string Logger::GetLogSwitch() {
+    return log.logSwitch;
+}
+
+std::string Logger::GetLogFileSwitch() {
+    return log.logFileSwitch;
+}
+
+std::string Logger::GetLogTerminalSwitch() {
+    return log.logTerminalSwitch;
+}
+
+std::string Logger::GetLogType(LogType logType) {
+    if (mLogTypeMap.find(logType) != mLogTypeMap.end()) {
+        return mLogTypeMap[logType];
     }
-    fwrite(&messageAll, messageAll.size(), 1, fp);
+    return "";
 }
 
-void Logger::WriteLogIntoTerminal(LogType logType, std::string message) {
-    std::string messageAll = __LOGTIME__ + mLogTypeMap[logType] + " " + message;
-    messageAll = messageAll + " PID: " + __LOGPID__ + " TID: " + __LOGTID__;
-    messageAll = messageAll + "[" + __LOGFUNC__ + ":" + std::to_string(__LOGLINE__) + "]";
-    std::cout << messageAll << std::endl;
-}
+void Logger::test() {
+    std::string fileName = Logger::GetInstance()->GetFilePathAndName();
+    std::ofstream file;
+    file.open(fileName.c_str(), std::ios::app);
+    if (file) {
+        std::string message = "123\n";
+        file << message;
 
-void Logger::WriteLog(LogType logType, std::string message) {
-    if (SWITCH_ON == log.logSwitch) {
-        if (SWITCH_OFF != log.logFileSwitch) {
-            WriteLogIntoFile(logType, message);
-        }
-        if (SWITCH_OFF != log.logTerminalSwitch) {
-            WriteLogIntoTerminal(logType, message);
-        }
+        std::cout << "yes" << std::endl;
     }
-}
-
-void Logger::LogWarn(std::string message) {
-    WriteLog(LogType::WarnType, message);
+    else {
+        std::cout << "no";
+    }
+    file.close();
+   
 }

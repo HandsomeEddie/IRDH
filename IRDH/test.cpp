@@ -1,5 +1,6 @@
 #include "test.h"
 
+
 int main() {
     // ---------------------------- Content owner ----------------------------
     FileReader fileReader;
@@ -38,9 +39,8 @@ int main() {
     std::cout << "The embedded data is: " << data << std::endl;
     std::cout << "The extracted data is: " << extractData << std::endl;
 
-
-    Logger::GetInstance()->LogWarn("123");
-    LOGWARN("234");
+    //Logger::GetInstance()->test();
+    LOGWARN("Test here");
 
     std::cout << "Over~";
 }

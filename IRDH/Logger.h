@@ -56,13 +56,15 @@ public:
 
     std::string GetFilePathAndName();
 
-    void WriteLogIntoFile(LogType logType, std::string message);
+    std::string GetLogSwitch();
 
-    void WriteLogIntoTerminal(LogType logType, std::string message);
+    std::string GetLogFileSwitch();
 
-    void WriteLog(LogType logType, std::string message);
+    std::string GetLogTerminalSwitch();
 
-    void LogWarn(std::string message);
+    std::string GetLogType(LogType logType);
+
+    void test();
 
 private:
     Log log;
@@ -74,6 +76,52 @@ private:
     Logger();
 };
 
-#define LOGWARN(message) Logger::GetInstance()->LogWarn(message)
+#define WRITE_INTO_FILE(logType, message)\
+    do {\
+        std::string fileName = Logger::GetInstance()->GetFilePathAndName();\
+        std::ofstream file; \
+        file.open(fileName.c_str(), std::ios::app);\
+        if (file) {\
+            std::string messageAll = __LOGTIME__ + Logger::GetInstance()->GetLogType(logType) + " ";\
+            messageAll = messageAll + "[" + __LOGFUNC__ + ": " + std::to_string(__LOGLINE__) + "]";\
+            messageAll = messageAll + " PID: " + __LOGPID__ + " TID : " + __LOGTID__ + "\n";\
+            messageAll = messageAll + "Remark: " + message + "\n";\
+            file << messageAll;\
+            file.close();\
+        }\
+    } while (0);
+
+#define WRITE_INTO_TERMINAL(logType, message)\
+    do {\
+        std::string messageAll = __LOGTIME__ + Logger::GetInstance()->GetLogType(logType) + " ";\
+        messageAll = messageAll + "[" + __LOGFUNC__ + ": " + std::to_string(__LOGLINE__) + "]";\
+        messageAll = messageAll + " PID: " + __LOGPID__ + " TID : " + __LOGTID__ + "\n";\
+        messageAll = messageAll + "Remark: " + message + "\n";\
+        std::cout << messageAll;\
+    } while (0);
+
+#define WRITE_LOG(logType, message)\
+    do {\
+        if (SWITCH_ON == Logger::GetInstance()->GetLogSwitch()) {\
+            if (SWITCH_OFF != Logger::GetInstance()->GetLogFileSwitch()) {\
+                WRITE_INTO_FILE(logType, message)\
+            }\
+            if (SWITCH_OFF != Logger::GetInstance()->GetLogTerminalSwitch()) {\
+                WRITE_INTO_TERMINAL(logType, message)\
+            }\
+        }\
+    } while (0);
+
+#define LOGERROR(message) WRITE_LOG(LogType::ErrorType, message)
+
+#define LOGWARN(message) WRITE_LOG(LogType::WarnType, message)
+
+#define LOGINFO(message) WRITE_LOG(LogType::InfoType, message)
+
+#define LOGDEBUG(message) WRITE_LOG(LogType::DebugType, message)
+
+#define LOGTRACE(message) WRITE_LOG(LogType::TraceType, message)
+
+
 
 #endif // LOGGER_H
