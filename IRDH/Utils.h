@@ -12,9 +12,9 @@ public:
 
     void MoveHist(Image& image, int val, int left, int right);
 
-    std::vector<std::bitset<8>> DataStr2Bits(const std::string& data);
+    std::vector<std::bitset<8>> DataStrToBits(const std::string& data);
 
-    std::string Bits2DataStr(const std::vector<std::bitset<8>>& bits);
+    std::string BitsToDataStr(const std::vector<std::bitset<8>>& bits);
 
     std::string GetPath();
 

@@ -4,7 +4,7 @@
 
 void DataHider::Init(const Image& image, const std::string& data) {
     mMaskImage = image;
-    mBits = Utils::GetInstance()->DataStr2Bits(data);
+    mBits = Utils::GetInstance()->DataStrToBits(data);
 }
 
 void DataHider::Embed() {

@@ -6,11 +6,11 @@
 
 class FileReader {
 public:
-    bool ReadImage(const std::string& imageName);
+    void ReadImage(const std::string& imageName);
 
     Image GetImage();
 
-    bool WriteImage(Image image, const std::string& imageName);
+    void WriteImage(Image image, const std::string& imageName);
 
 private:
     void ReadBitmap(FILE* fp);

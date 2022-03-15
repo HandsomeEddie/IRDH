@@ -50,7 +50,7 @@ void Receiver::Modify() {
 
             if (count >= mHidingKey.dataLength * 8) {
                 Utils utils;
-                mData = utils.Bits2DataStr(bits);
+                mData = utils.BitsToDataStr(bits);
                 return;
             }
         }

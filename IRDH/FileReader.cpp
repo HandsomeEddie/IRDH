@@ -1,15 +1,15 @@
 #include "FileReader.h"
 
-bool FileReader::ReadImage(const std::string& imageName) {
+void FileReader::ReadImage(const std::string& imageName) {
     std::string imageNameSuffix = imageName.substr(imageName.find_last_of('.') + 1);
     if (imageNameSuffix != "bmp") {
-        return false; // Only support reading bmp image
+        LOGWARN("Only support bmp file");
     }
 
     FILE* fp;
     fopen_s(&fp, imageName.c_str(), "rb");
     if (nullptr == fp) {
-        return false;; // Cannot open file
+        LOGERROR("Read file error: " + imageName);
     }
 
     fread(&mImageHeader.fileHeader, sizeof(BITMAPFILEHEADER), 1, fp);
@@ -23,18 +23,17 @@ bool FileReader::ReadImage(const std::string& imageName) {
 
     ReadBitmap(fp);
     fclose(fp);
-    return true;
 }
 
 Image FileReader::GetImage() {
     return mImage;
 }
 
-bool FileReader::WriteImage(Image image, const std::string& imageName) {
+void FileReader::WriteImage(Image image, const std::string& imageName) {
     FILE* fp;
     fopen_s(&fp, imageName.c_str(), "wb");
     if (nullptr == fp) {
-        return false;
+        LOGERROR("Write file error: " + imageName);
     }
 
     int linebyte = (mImageHeader.infoHeader.biHeight * mImageHeader.infoHeader.biBitCount / 8 + 3) / 4 * 4;
@@ -79,7 +78,6 @@ bool FileReader::WriteImage(Image image, const std::string& imageName) {
     delete[] data;
 
     fclose(fp);
-    return true;
 }
 
 void FileReader::ReadBitmap(FILE* fp) {
